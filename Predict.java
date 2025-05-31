@@ -1,145 +1,165 @@
 import java.sql.*;
-import java.util.Scanner;
+import java.util.*;
 
-public class Predict extends NotifyFire{
+public class Predict extends NotifyFire {
 
     /* 3번 기능 */
 
-    GetWeather gw = new GetWeather();
+    private String currentMountain;
+    private String region;
 
-    public String currentMountain;
-    public String region;
+    public void setCurrentMountain(String currentMountain) {
+        this.currentMountain = currentMountain;
+    }
 
-    public void run(Scanner scanner) {
-        System.out.println("[대구 산불 발생 예측]");
+    public void setRegion(String region) {
+        this.region = region;
+    }
+
+    public String getCurrentMountain() {
+        return currentMountain;
+    }
+
+    public String getRegion() {
+        return region;
     }
 
     @Override
-    public void getInfo(Scanner sc){
+    public void setInfo(Scanner sc) {
+        System.out.println("산불 ");
+
         System.out.print("현재 위치한 구 또는 군을 입력하세요: ");
+
         boolean flag = false;
-        while(flag == false) {
-            region = sc.nextLine();
-            for(int i=0; i<regions1.length; i++){
-                if(region.equals(regions1[i])){
+
+        while (!flag) {
+            setRegion(sc.nextLine().trim());
+            for (int i = 0; i < regions1.length; i++) {
+                if (getRegion().equals(regions1[i])) {
                     flag = true;
                 }
-                if(region.equals(regions2[i])){
+                if (region.equals(regions2[i])) {
                     flag = true;
                 }
             }
-            if(!flag) {
-                region=null;
+            if (!flag) {
+                region = null;
                 System.out.print("다시 입력해주세요: ");
             }
         }
     }
 
-    public double[] getLatLon(){
-        double lat=0.0;
-        double lon=0.0;
+    public double[] setLatLon() {
+        double lat = 0.0;
+        double lon = 0.0;
         double[] position = new double[2];
 
-        if(region.equals("군위") || region.equals("군위군")){
-            lat=36.239397;
-            lon=128.572818;
-        }else if(region.equals("달성") || region.equals("달성군")){
-            lat=35.774448;
-            lon=128.431704;
-        }else if(region.equals("동") || region.equals("동구")){
-            lat=35.886704;
-            lon=128.635004;
-        }else if(region.equals("서") || region.equals("서구")){
-            lat=35.872154;
-            lon=128.559096;
-        }else if(region.equals("북") || region.equals("북구")){
-            lat=35.904626;
-            lon=128.582760;
-        }else if(region.equals("남") || region.equals("남구")){
-            lat=35.845626;
-            lon=128.594663;
-        }else if(region.equals("중") || region.equals("중구")){
-            lat=35.869634;
-            lon=128.607042;
-        }else if(region.equals("달서") || region.equals("달서구")){
-            lat=35.829398;
-            lon=128.532611;
-        }else if(region.equals("수성") || region.equals("수성구")){
-            lat=35.856154;
-            lon=128.639360;
+        if (region.equals("군위") || region.equals("군위군")) {
+            lat = 36.239397;
+            lon = 128.572818;
+        } else if (region.equals("달성") || region.equals("달성군")) {
+            lat = 35.774448;
+            lon = 128.431704;
+        } else if (region.equals("동") || region.equals("동구")) {
+            lat = 35.886704;
+            lon = 128.635004;
+        } else if (region.equals("서") || region.equals("서구")) {
+            lat = 35.872154;
+            lon = 128.559096;
+        } else if (region.equals("북") || region.equals("북구")) {
+            lat = 35.904626;
+            lon = 128.582760;
+        } else if (region.equals("남") || region.equals("남구")) {
+            lat = 35.845626;
+            lon = 128.594663;
+        } else if (region.equals("중") || region.equals("중구")) {
+            lat = 35.869634;
+            lon = 128.607042;
+        } else if (region.equals("달서") || region.equals("달서구")) {
+            lat = 35.829398;
+            lon = 128.532611;
+        } else if (region.equals("수성") || region.equals("수성구")) {
+            lat = 35.856154;
+            lon = 128.639360;
         }
 
-        position[0]=lat;
-        position[1]=lon;
+        position[0] = lat;
+        position[1] = lon;
+
         return position;
     }
 
-    public void predictPath(String mountain) {
+    public void getInfo(String mountain) {
+        GetWeather gw = new GetWeather();
 
-        double[] latLon = getLatLon();
+        double[] latLon = setLatLon();
         gw.getWeather(latLon[0], latLon[1]);
 
         currentMountain = mountain;
 
-        if(region.equals("군위") || region.equals("군위군")) {
-            sql = "SELECT nearby_village " +
-                    "FROM gunwi_mountains " +
-                    "WHERE mountain_name = ? AND village_direction = ?";
-        }else if (region.equals("달성") || region.equals("달성군")) {
-            sql = "SELECT nearby_village " +
-                    "FROM dalseong_mountains " +
-                    "WHERE mountain_name = ? AND village_direction = ?";
-        }else if (region.equals("북") || region.equals("북구")) {
-            sql = "SELECT nearby_village " +
-                    "FROM buk_mountains " +
-                    "WHERE mountain_name = ? AND village_direction = ?";
-        }else if (region.equals("동") || region.equals("동구")) {
-            sql = "SELECT nearby_village " +
-                    "FROM dong_mountains " +
-                    "WHERE mountain_name = ? AND village_direction = ?";
-        }else if (region.equals("남") || region.equals("남구")) {
-            sql = "SELECT nearby_village " +
-                    "FROM nam_mountains " +
-                    "WHERE mountain_name = ? AND village_direction = ?";
-        }else if (region.equals("서") || region.equals("서구")) {
-            sql = "SELECT nearby_village " +
-                    "FROM seo_mountains " +
-                    "WHERE mountain_name = ? AND village_direction = ?";
-        }else if (region.equals("중") || region.equals("중구")) {
-            sql = "SELECT nearby_village " +
-                    "FROM seo_mountains " +
-                    "WHERE mountain_name = ? AND village_direction = ?";
-        }else if (region.equals("수성") || region.equals("수성구")) {
-            sql = "SELECT nearby_village " +
-                    "FROM suseong_mountains " +
-                    "WHERE mountain_name = ? AND village_direction = ?";
-        }else if (region.equals("달서") || region.equals("달서구")) {
-            sql = "SELECT nearby_village " +
-                    "FROM dalseo_mountains " +
-                    "WHERE mountain_name = ? AND village_direction = ?";
+        Map<String, String> map = new HashMap<>();
+        map.put("군위", "gunwi_mountains");
+        map.put("군위군", "gunwi_mountains");
+        map.put("달성", "dalseong_mountains");
+        map.put("달성군", "dalseong_mountains");
+        map.put("북", "buk_mountains");
+        map.put("북구", "buk_mountains");
+        map.put("동", "dong_mountains");
+        map.put("동구", "dong_mountains");
+        map.put("남", "nam_mountains");
+        map.put("남구", "nam_mountains");
+        map.put("서", "seo_mountains");
+        map.put("서구", "seo_mountains");
+        map.put("중", "jung_mountains");
+        map.put("중구", "jung_mountains");
+        map.put("수성", "suseong_mountains");
+        map.put("수성구", "suseong_mountains");
+        map.put("달서", "dalseo_mountains");
+        map.put("달서구", "dalseo_mountains");
+
+        String tableName = map.get(region);
+        if (tableName == null) {
+            System.out.println("지원하지 않는 지역입니다.");
+            return;
         }
 
-        try (Connection conn = DriverManager.getConnection(url, user, password);
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        String sql = "SELECT nearby_village FROM " + tableName + " WHERE mountain_name = ? AND village_direction = ?";
 
-            pstmt.setString(1, currentMountain);
-            pstmt.setString(2, gw.windDirection );
+        // 풍향 집합
+        String[] directions = getDirections(gw.windDirection);
 
-            ResultSet rs = pstmt.executeQuery();
+        Set<String> villageSet = new HashSet<>(); // 마을 이름 중복 제거를 위한 hashset
 
-            found=false;
-            String village=null;
-            while (rs.next()) {
-                found = true;
-                village = rs.getString("nearby_village");
+        try (Connection conn = DriverManager.getConnection(url, user, password)) {
+
+            Map<String, String> wind =  Map.of("N","북풍","E","동풍","S","남풍","W",
+                    "서풍","NW","북서풍","NE","북동풍","SE","남동풍","SW","남서풍");
+
+            System.out.printf("현재 바람 방향은 [%s] 입니다.\n", wind.get(gw.windDirection));
+
+            for (String dir : directions) {
+                try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                    pstmt.setString(1, currentMountain);
+                    pstmt.setString(2, dir);
+
+                    ResultSet rs = pstmt.executeQuery();
+
+                    while (rs.next()) {
+                        String village = rs.getString("nearby_village");
+                        villageSet.add(village); // Set에 추가
+                    }
+                }
             }
 
-            System.out.printf("현재 바람이 %s 방향으로 불고 있습니다.\n", gw.windDirection);
-
-            if(!found) {
+            if (villageSet.isEmpty()) {
                 System.out.println("산불 이동 예상 경로에 인접 마을이 없습니다.");
-            }else{
-                System.out.printf("현재 풍향에 따라 산불 이동 가능성이 높으니\n %s에 거주하시는 주민 분들은 창문을 닫고 대피 준비 하시길 바랍니다.\n",village);
+            } else {
+                System.out.println("현재 풍향에 따라 산불 및 연기 이동 가능성이 높은 마을 목록:");
+                for (String village : villageSet) {
+                    System.out.printf("- %s", village);
+                }
+                System.out.println("에 거주하시는 주민 분들은 창문을 닫고 대피 준비하시길 바랍니다.");
+                System.out.println();
             }
 
         } catch (SQLException e) {
@@ -148,50 +168,28 @@ public class Predict extends NotifyFire{
         }
     }
 
-    /*
-    public static double calculateFFDRI(int DWI, int FMI, int TMI, double weight) {
-        return (7*DWI+1.5*FMI+1.5*TMI)*weight;
-    }
-
-    // 일가중치 weight 계산
-    public static double getDayWeight(LocalDate date) {
-        int month=date.getMonthValue();
-        int day=date.getDayOfMonth();
-
-        return switch(month) {
-            case 1, 2, 5 -> 0.85;
-            case 3 -> (day <= 10) ? 0.9 : (day <= 20 ? 0.95 : 1.0);
-            case 4 -> (day <= 10) ? 1.0 : (day <= 20 ? 0.95 : 0.9);
-            case 6 -> 0.8;
-            case 7, 8 -> 0.33;
-            case 9 -> 0.5;
-            case 10 -> 0.61;
-            case 11 -> 0.78;
-            case 12 -> 0.83;
-            default -> 1.0;
-        };
-    }
-
-    // 지형지수(TMI) 계산 : 일단 방위만
-    public static double getTMI(String location) {
-        return switch (location) {
-            case "E" -> 1.5;
-            case "N", "W" -> 2.5;
-            case "SE", "S" -> 4.0;
-            case "NW", "NE" -> 4.5;
-            default -> 5.0;
-        };
-    }
-
-    // 위험 등급 반환
-    public static String getRiskLevel(double ffdIndex) {
-        if(ffdIndex <=20) return "낮음";
-        else if (ffdIndex<=40) return "보통";
-        else if (ffdIndex<=60) return "위험";
-        else if (ffdIndex<=80) return "매우 위험";
-        else return "발생";
-    }
-
+    /* windDirection에 따른 풍향 집합 생성 메소드.
+        NotifyFire 클래스의 getInfo() 메소드랑 비슷한 느낌
+        바람 방향이 만약 E 즉 동풍이면 그 산 기준 동쪽, 북동쪽, 남동쪽 마을 모두가 피해를 입을 수 있음
+        따라서 케이스 별로 쪼개서 getInfo()의 directions[] 에 넣는 메소드
      */
+    private String[] getDirections(String windDirection) {
+        if (windDirection.length() == 2) {
+            String dir1 = windDirection;
+            String dir2 = String.valueOf(windDirection.charAt(0));
+            String dir3 = String.valueOf(windDirection.charAt(1));
+            return new String[]{dir1, dir2, dir3};
+        } else if (windDirection.length() == 1) {
+            return switch (windDirection) {
+                case "N" -> new String[]{"N", "NW", "NE"};
+                case "S" -> new String[]{"S", "SW", "SE"};
+                case "E" -> new String[]{"E", "NE", "SE"};
+                case "W" -> new String[]{"W", "NW", "SW"};
+                default -> new String[]{};
+            };
+
+        }
+        return new String[]{windDirection};
+    }
 }
 
