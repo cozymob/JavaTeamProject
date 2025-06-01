@@ -150,22 +150,30 @@ public class QuizManager {
         }
 
         while (true) {
+        	 if(!hasWrong) {
+             	System.out.println("오답이 없습니다!");
+             }
             System.out.println("1. 전체 풀이 보기");
-            System.out.println("2. 오답 풀이 보기");
+            if (hasWrong) {
+            	System.out.println("2. 오답 풀이 보기");
+            }
             System.out.println("3. 끝내기");
             if (hasWrong) {
                 System.out.println("4. 다시 오답 퀴즈 풀기");
             }
             System.out.println("5. 메인으로 돌아가기");
-
+          
             String sel = scanner.nextLine().trim();
 
             if (sel.equals("1")) {
                 showReview(true);
-            } else if (sel.equals("2")) {
-                showReview(false);
+            } 
+            else if (sel.equals("2")&&hasWrong) {
+            		showReview(false);
+            		
+                
             } else if (sel.equals("3")) {
-                System.out.println("퀴즈가 끝났습니다.");
+                System.out.println("퀴즈 프로그램을 종료합니다.");
                 System.exit(0);
                 
                 //오답 퀴즈 시작
