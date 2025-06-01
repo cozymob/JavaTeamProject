@@ -10,9 +10,16 @@ public class Quiz {
         this.answer = answer;
         this.explanation = explanation;
     }
-
-    public String getNumber() { return number; }
-    public String getQuestion() { return question; }
-    public String getAnswer() { return answer; }
-    public String getExplanation() { return explanation; }
+    //문제 번호
+    public String getNumber() { 
+    	return number; }
+    //문제
+    public String getQuestion() { 
+    	return question; }
+    //답
+    public String getAnswer() { 
+    	return answer; }
+    //해설
+    public String getExplanation() { 
+    	return explanation; }
 }
