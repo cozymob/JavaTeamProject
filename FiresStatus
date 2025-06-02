@@ -1,0 +1,94 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Scanner;
+
+public class WildFireStatus {
+	
+
+	private int answer;
+	private boolean menue;
+	
+	public void selectMenue(ArrayList<String> onFire,Scanner scanner) {
+		String statusMessage;
+		menue=false;
+		
+		while(menue==false) {
+			System.out.println("1.현재 접수된 신고 현황\n2.최근 대구 산불 통계\n3.메인으로 돌아가기 ");
+			answer=scanner.nextInt();
+			scanner.nextLine();
+		switch(answer) {
+		
+		case 1:
+			
+			if(onFire.isEmpty()) {
+				System.out.println("\n접수된 신고가 없습니다.");
+				}
+			else {
+				HashMap<String,Integer> rpCount=countDuplicates(onFire);
+				statistics(rpCount);
+				for (String mountain : rpCount.keySet()) {
+				    int count = rpCount.get(mountain);
+				    if (count == 1) {
+				        statusMessage = "-> 의심";
+				    } else if (count <= 3) {
+				        statusMessage = "-> 유력";
+				    } else if (count <= 5) {
+				        statusMessage = "-> 확실";
+				    } else {
+				        statusMessage = "-> 즉시 대응 필요";
+				    }
+				    if (count >= 1) {
+				        System.out.println(mountain + "("+ count + "회)"+ statusMessage);
+				    }
+				   
+				}
+				
+				
+				}
+			break;
+		case 2:
+			System.out.println("대구 산불 통계: ???");
+			break;
+		case 3:
+			this.menue=true;
+			break;
+		default: System.out.println("잘못된 메뉴 선택입니다. 다시 선택해주세요");
+		}//switch
+		}//while
+		
+	}
+	
+	public HashMap<String, Integer> countDuplicates(ArrayList<String> list) {//중복신고시 신고 횟수 업데이트
+	    HashMap<String, Integer> countMap = new HashMap<>();
+
+	    for (String item : list) {
+	        countMap.put(item, countMap.getOrDefault(item, 0) + 1);
+	    }
+
+	    return countMap;
+	}
+
+	public void statistics(HashMap<String,Integer> mountains) {
+		String maxCountMountain="";
+		Integer maxCount=0;
+		int mtCount=mountains.size();
+		int rpCount=0;
+		boolean a =true;
+		for(String key:mountains.keySet()) {
+			rpCount+=mountains.get(key);
+			if(maxCount<mountains.get(key)) {
+				maxCount=mountains.get(key);
+				maxCountMountain=key;
+				
+			}
+			
+		System.out.println("총 신고건수 : "+rpCount);
+		System.out.println("가장 많이 신고된 산 : "+maxCountMountain+"("+mountains.get(maxCountMountain)+"회)");
+		System.out.println("신고된 산의 개수 : "+ mtCount+"\n");
+
+
+		
+		
+		
+	}
+}}
