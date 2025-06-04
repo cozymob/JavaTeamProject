@@ -24,34 +24,28 @@ public class NotifyFire {
         return mostRiskMountain;
     }
 
-    public String getRegion() {
-        return region;
-    }
-
-    public String getVillage() {
-        return village;
-    }
-
-    public String getDirection() {
-        return direction;
-    }
-
     // 방향 변환 Map
     private static final Map<String, String> DIRECTION_MAP = Map.of(
             "N", "S", "S", "N", "E", "W", "W", "E",
             "NW", "SE", "NE", "SW", "SW", "NE", "SE", "NW"
     );
 
-    public void setInfo(Scanner scanner) {
+    public boolean setInfo(Scanner scanner) {
         System.out.println("--------------------------------------------------------------");
         System.out.println("신고 위치 기준 산불이 발생한 산과 산불 위험지수를 파악해드립니다.");
         System.out.println("산불 위험지수는 0~100 의 수치로 100에 가까울 수록 산불 발생 위험도가 높습니다.");
         System.out.println();
-        System.out.print("현재 위치한 구 또는 군을 입력하세요: ");
+        System.out.print("현재 위치한 구 또는 군을 입력하세요. (뒤로가기 q 또는 Q): ");
         boolean flag = false;
 
         while (!flag) {
+
             region = scanner.nextLine().trim();
+
+            if(region.equals("q") || region.equals("Q")) {
+                return false;
+            }
+
             for (int i = 0; i < regions1.length; i++) {
                 if (region.equals(regions1[i]) || region.equals(regions2[i])) {
                     flag = true;
@@ -79,9 +73,9 @@ public class NotifyFire {
                 direction = scanner.nextLine().toUpperCase();
             }
         }
-
+        System.out.println();
         System.out.println("신고 위치 : " + region + " " + village);
-        System.out.println("신고가 접수되었습니다. 빠르게 대응하겠습니다.\n");
+        return true;
     }
 
     public void getInfo() {
@@ -106,7 +100,8 @@ public class NotifyFire {
         map.put("달서구", "dalseo_mountains");
 
         String tableName = map.get(region);
-        if (tableName == null) {
+
+        if (tableName == null && !region.equals("q") && !village.equals("Q")) {
             System.out.println("지원하지 않는 지역입니다.");
             return;
         }
@@ -123,7 +118,7 @@ public class NotifyFire {
 
             // 그 방향에 산이 없으면 2차시도
             if (!found) {
-                System.out.println(" 조건에 맞는 산이 없습니다. 추가 방향 검색을 시도합니다...");
+                System.out.println("해당 방향에 맞는 산이 없습니다. 추가 방향 검색을 시도합니다...");
 
                 if (counterDirection.length() == 2) { // 방향이 NW 인 경우 NW, N, W 세 방향 모두 조사
                     for (char dir : counterDirection.toCharArray()) {
@@ -144,16 +139,28 @@ public class NotifyFire {
             }
 
             if (!found) { // 2차 시도까지 했는데도 없으면 진짜 없는 것임
-                System.out.println(" 추가 검색에도 조건에 맞는 산이 없습니다.");
+                System.out.println("추가 검색에도 조건에 맞는 산이 없습니다.");
                 System.out.println("올바른 동 또는 리 이름을 입력했는 지 확인해보세요.");
                 System.out.println();
             }
 
             if (mostRisk != 0.0 && mostRiskMountain != null) {
+                System.out.println("신고가 접수되었습니다. 감사합니다.\n");
+                System.out.println();
+
                 System.out.printf("🚨 가장 위험한 산: %s (산불 위험지수: %.2f)%n", mostRiskMountain, mostRisk);
                 System.out.println();
                 System.out.printf("산불 발생지역이 [%s]일 가능성이 높습니다.\n", mostRiskMountain);
-                System.out.println("인근 대피소는 [군위농업기술센터(지하 1층)] 입니다."); // TODO: 대피소 연동
+                System.out.println();
+                ShelterLocation shelterLocation = new ShelterLocation();
+                if(region.length() == 1) {
+                    String regionName = region+"구";
+                    System.out.printf("<%s 대피소 목록 입니다.>\n",regionName);
+                    shelterLocation.printShelterLocation(regionName);
+                }else{
+                    System.out.printf("<%s 대피소 목록 입니다.>\n",region);
+                    shelterLocation.printShelterLocation(region);
+                }
                 System.out.println();
                 System.out.println();
             }
@@ -171,11 +178,12 @@ public class NotifyFire {
      */
     private boolean queryAndUpdate(Connection conn, String sql, String village, String direction) {
         boolean localFound = false;
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, village);
-            pstmt.setString(2, direction);
 
-            try (ResultSet rs = pstmt.executeQuery()) {
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, village);
+            ps.setString(2, direction);
+
+            try (ResultSet rs = ps.executeQuery()) {
                 Map<Double, String> map = new HashMap<>();
                 while (rs.next()) {
                     localFound = true;

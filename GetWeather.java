@@ -6,10 +6,24 @@ import org.json.JSONObject;
 
 public class GetWeather {
 
-    String windDirection; // 풍향 (8방위)
-    int humidity; // 습도 (%)
-    double windSpeed; // 풍속 (m/s)
-    double rainfall; // 강우량 (mm)
+    /* 날씨 가져오는 api 연동 클래스 */
+
+    private String windDirection; // 풍향 (8방위)
+    private int humidity; // 습도 (%)
+    private double windSpeed; // 풍속 (m/s)
+    private double rainfall; // 강우량 (mm)
+
+    public String getWindDirection(){
+        return windDirection;
+    }
+
+    public int getHumidity(){
+        return humidity;
+    }
+
+    public double getRainfall(){
+        return rainfall;
+    }
 
     public void getWeather(double lat, double lon) { // 군, 구청 위,경도로 행정구역별 날씨 받아옴
         String apiKey = "c502f3364872e84c7cb7f9b861287218"; // 발급받은 API 키
@@ -61,6 +75,7 @@ public class GetWeather {
             }
 
             // 결과 출력
+            System.out.println();
             System.out.println("습도: " + humidity + "%");
             System.out.print("풍속: " + windSpeed + " m/s");
             if (windSpeed < 4) System.out.println(" 의 약한 바람");

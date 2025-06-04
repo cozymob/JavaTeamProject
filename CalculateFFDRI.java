@@ -4,8 +4,8 @@ public class CalculateFFDRI {
     static GetWeather gw = new GetWeather();
 
 	private double RNE;
-    private double humidity= gw.humidity;;
-    private double rainfall= gw.rainfall;
+    private double humidity= gw.getHumidity();;
+    private double rainfall= gw.getRainfall();
     private double avgWind = 3.2; //
     private double maxTemp = 32.0;
     private double effHum = 25.0;
@@ -17,15 +17,6 @@ public class CalculateFFDRI {
         double weight = 0.85;// 5월 고정
         return (7 * dwi + 1.5 * fmi + 1.5 * tmi) * weight;
     }
-
-    /*public void setHumidity() {
-        this.humidity=gw.humidity;
-    }
-
-    public double getHumidity() {
-        return humidity;
-    }
-	*/
 
     public double getTMI(String direction) {
 	    	return switch (direction) {
