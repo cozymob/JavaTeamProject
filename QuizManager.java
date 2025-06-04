@@ -17,13 +17,13 @@ public class QuizManager {
     	String ans;
     	while(true) {
         System.out.print("퀴즈를 시작하려면 Y를, 끝내려면 Q를 입력하세요: ");
-        ans=scanner.nextLine().trim();
+        ans=scanner.nextLine().trim(); 
         if (!ans.equalsIgnoreCase("Y")&&!ans.equalsIgnoreCase("Q")) {
         	System.out.println("올바르게 입력해주세요.");
         	}
         else if(ans.equalsIgnoreCase("Q")) {
         	System.out.println("퀴즈 프로그램을 종료합니다.");
-        	System.exit(0);
+        	return;
         }
         else if(ans.equalsIgnoreCase("Y")) {
         	System.out.println("퀴즈 프로그램을 시작합니다.");
@@ -39,11 +39,13 @@ public class QuizManager {
             String choice = scanner.nextLine().trim();
             if (choice.equals("1")) {
                 randomSolve();
+                break;
             } else if (choice.equals("2")) {
                 categorySolve();
+                break;
             } else if (choice.equals("3")) {
                 System.out.println("퀴즈 프로그램을 종료합니다.");
-                System.exit(0);
+                return; 
             } else {
                 System.out.println("올바른 숫자를 입력해주세요.(1~3)");
             }
@@ -157,11 +159,10 @@ public class QuizManager {
             if (hasWrong) {
             	System.out.println("2. 오답 풀이 보기");
             }
-            System.out.println("3. 끝내기");
             if (hasWrong) {
-                System.out.println("4. 다시 오답 퀴즈 풀기");
+                System.out.println("3. 다시 오답 퀴즈 풀기");
             }
-            System.out.println("5. 메인으로 돌아가기");
+            System.out.println("4. 퀴즈 시작으로 돌아가기");
           
             String sel = scanner.nextLine().trim();
 
@@ -169,15 +170,10 @@ public class QuizManager {
                 showReview(true);
             } 
             else if (sel.equals("2")&&hasWrong) {
-            		showReview(false);
-            		
-                
-            } else if (sel.equals("3")) {
-                System.out.println("퀴즈 프로그램을 종료합니다.");
-                System.exit(0);
-                
+            		showReview(false);           		                
                 //오답 퀴즈 시작
-            } else if (sel.equals("4") && hasWrong) {
+            } 
+            else if (sel.equals("3") && hasWrong) {
                 List<Quiz> wrongQuizzes = new ArrayList<>();
                 for (AnswerRecord r : records) {
                     if (!r.isCorrect()) {
@@ -196,13 +192,16 @@ public class QuizManager {
                 }
                 showResult();
                 return;
+                
                 // 오답 퀴즈 끝
-            } else if (sel.equals("5")) {
-                System.out.println("메인화면으로 돌아갑니다.\n");
+            } 
+            else if (sel.equals("4")) {
+                System.out.println("퀴즈 시작 화면으로 돌아갑니다.\n");
                 run();
-                return;
-            } else {
-                System.out.println("1~5 중에서 다시 선택해주세요.");
+                break;
+            } 
+            else {
+                System.out.println("1~4 중에서 다시 선택해주세요.");
             }
         }
     }
