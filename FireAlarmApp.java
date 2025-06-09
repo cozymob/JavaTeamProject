@@ -165,15 +165,14 @@ public class FireAlarmApp {
                     break;
 
                 case "5":
-                    List<Quiz> quizzes = null;
-                    try {
-                        quizzes = QuizLoader.loadFromFile("ox_quiz.txt");
-                    } catch (IOException e) {
-                        System.err.println("에러 발생: " + e.getMessage());
-                    }
-                    QuizManager manager = new QuizManager(quizzes);
-                    manager.run();
-                    break;
+                	 List<Quiz> quizzes = QuizLoader.loadFromFile("ox_quiz.txt");
+                	    if (quizzes != null && !quizzes.isEmpty()) {
+                	        QuizManager manager = new QuizManager(quizzes);
+                	        manager.run();
+                	    } else {
+                	        System.out.println("퀴즈가 없습니다. 파일을 확인해주세요.");
+                	    }
+                	    break;
 
                 case "6":
                     DangerPointMap dpm = new DangerPointMap();
