@@ -2,7 +2,7 @@ import java.io.*;
 import java.util.*;
 
 public class QuizLoader {
-    public static List<Quiz> loadFromFile(String filename) throws IOException {
+    public static List<Quiz> loadFromFile(String filename)  {
         //리스트 만들기
     	List<Quiz> quizzes = new ArrayList<>();
 
